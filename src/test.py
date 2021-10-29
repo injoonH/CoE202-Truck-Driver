@@ -2,6 +2,7 @@ import numpy as np
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.side_channel.engine_configuration_channel import EngineConfigurationChannel
 from datetime import datetime
+from tqdm import tqdm
 
 
 '''
@@ -129,7 +130,7 @@ if __name__ == '__main__':
     combinations = np.meshgrid(*ranges.values())
     combinations = np.array([el.flatten() for el in combinations]).T
 
-    for sw, st, th, bf, gm in combinations:
+    for sw, st, th, bf, gm in tqdm(combinations):
         main(road, SPEED=12, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
              BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=goal_dist, LOG_FILE=log_file)
     
