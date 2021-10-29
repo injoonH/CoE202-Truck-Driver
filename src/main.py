@@ -58,18 +58,12 @@ def print_log(init_loc, cur_loc, cur_obs):
     print(f'cur  obs [{cur_obs[3]:7.3f}, {cur_obs[2]:7.3f}, {cur_obs[4]:7.3f}, {cur_obs[0]:7.3f}, {cur_obs[1]:7.3f}]')
 
 
-def main():
-    SPEED = 8
-    FRAMES = 2000
-    ROAD = 2
-    FRONT_WEIGHT = 1
-    SIDE_WEIGHT = 8
-    SENSITIVITY = 2     # steering sensitivity
-    THRESHOLD = 6       # if a minimum value of three front sensors is smaller than threshold, follow max
-    BUF_SIZE = 16
-    GAMMA = 0.97
-    GOAL_DIST = 10      # if manhattan distance is smaller than goal dist, the truck moves forward
-    PRINT_LOG = False
+def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSITIVITY=2, THRESHOLD=6, BUF_SIZE=16, GAMMA=0.97, GOAL_DIST=10, PRINT_LOG=False):
+    '''
+    SENSITIVITY:    steering sensitivity
+    THRESHOLD:      if a minimum value of three front sensors is smaller than threshold, follow max
+    GOAL_DIST:      if manhattan distance is smaller than goal dist, the truck moves forward
+    '''
 
     channel = EngineConfigurationChannel()
     channel.set_configuration_parameters(width=1000, height=800, time_scale=SPEED)
@@ -84,7 +78,7 @@ def main():
     init_obs = decision_steps.obs[0][0][6:]
     memory_buffer = [init_obs] * BUF_SIZE
 
-    for i in range(FRAMES):
+    for i in range(MAX_FRAMES):
         decision_steps, _ = env.get_steps(behavior_name)
         cur_loc = decision_steps.obs[0][0][:3]
         cur_obs = decision_steps.obs[0][0][6:]
@@ -110,4 +104,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(2)
