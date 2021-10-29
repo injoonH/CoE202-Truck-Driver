@@ -81,6 +81,8 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
     init_obs = decision_steps.obs[0][0][6:]
     memory_buffer = [init_obs] * BUF_SIZE
 
+    goal = 0
+
     for i in range(MAX_FRAMES):
         decision_steps, _ = env.get_steps(behavior_name)
         cur_loc = decision_steps.obs[0][0][:3]
@@ -89,10 +91,8 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
         memory_buffer.insert(0, cur_obs)
 
         if abs(cur_loc[0] - dest_loc[0]) + abs(cur_loc[2] - dest_loc[2]) < GOAL_DIST:
-            if LOG_FILE is not None:
-                LOG_FILE.write(','.join([i, FRONT_WEIGHT, SIDE_WEIGHT, SENSITIVITY, THRESHOLD, BUF_SIZE, GAMMA]) + '\n')
-                break
-            action = [0, 150, 150]
+            goal = 1
+            break
         else:
             action = get_action(memory_buffer, FRONT_WEIGHT, SIDE_WEIGHT, SENSITIVITY, GAMMA, THRESHOLD)
         
@@ -107,31 +107,33 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
         # If returned to initial point after some frames, break
         if i > 16 and round(cur_loc[0]) == round(init_loc[0]) and round(cur_loc[2]) == round(init_loc[2]):
             break
-
+    
+    LOG_FILE.write(','.join(map(str, [i, SIDE_WEIGHT, SENSITIVITY, THRESHOLD, BUF_SIZE, GAMMA, goal])) + '\n')
     env.close()
 
 
 if __name__ == '__main__':
     road = 2
     goal_dist = 5
+    speed = 16
 
     log_path = f'../Logs/Road{road}_GoalDist{goal_dist}({datetime.now():%Y%m%d_%H-%M-%S}).txt'
     log_file = open(log_path, 'w')
-    log_file.write('frame,front weight,side weight,sensitivity,threshold,buf size,gamma\n')
+    log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
 
     ranges = {
-        'side_weight': np.arange(1, 11),
-        'sensitivity': np.arange(0.5, 4.1, 0.1),
-        'threshold': np.arange(3, 11),
+        'side_weight': np.arange(2, 11),
+        'sensitivity': np.arange(0.5, 3.1, 0.1),
+        'threshold': np.arange(3, 9),
         'bufsize': np.arange(4, 36, 4),
-        'gamma': np.arange(0.95, 1, 0.01)
+        'gamma': np.arange(0.95, 0.99, 0.01)
     }
 
     combinations = np.meshgrid(*ranges.values())
     combinations = np.array([el.flatten() for el in combinations]).T
 
     for sw, st, th, bf, gm in tqdm(combinations):
-        main(road, SPEED=12, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
+        main(road, SPEED=speed, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
              BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=goal_dist, LOG_FILE=log_file)
     
     log_file.close()
