@@ -122,11 +122,11 @@ if __name__ == '__main__':
     log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
 
     ranges = {
-        'side_weight': np.arange(2, 11),
-        'sensitivity': np.arange(0.5, 3.1, 0.1),
-        'threshold': np.arange(3, 9),
-        'bufsize': np.arange(4, 36, 4),
-        'gamma': np.arange(0.95, 0.99, 0.01)
+        'side_weight': np.arange(2, 11),            # 9
+        'sensitivity': np.arange(0.5, 3.1, 0.5),    # 6
+        'threshold': np.arange(5, 8),               # 3
+        'bufsize': np.arange(8, 36, 4),             # 7
+        'gamma': np.arange(0.95, 0.99, 0.01)        # 4
     }
 
     combinations = np.meshgrid(*ranges.values())
