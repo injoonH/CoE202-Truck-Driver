@@ -71,7 +71,7 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
 
     channel = EngineConfigurationChannel()
     channel.set_configuration_parameters(width=1000, height=800, time_scale=SPEED)
-    env = UnityEnvironment(file_name=f'../Road{ROAD}/Prototype 1', side_channels=[channel])
+    env = UnityEnvironment(file_name=f'../Maps/Road{ROAD}/Prototype 1', side_channels=[channel])
     env.reset()
 
     behavior_name = list(env.behavior_specs)[0]  # List['My Behavior?team=0']

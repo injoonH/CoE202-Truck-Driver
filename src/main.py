@@ -57,20 +57,20 @@ def print_log(init_loc, cur_loc, cur_obs):
 
 def main():
     SPEED = 8
-    FRAMES = 20
-    ROAD = 2
+    FRAMES = 2000
+    ROAD = 1
     FRONT_WEIGHT = 1
-    SIDE_WEIGHT = 8
-    SENSITIVITY = 2     # steering sensitivity
-    THRESHOLD = 6       # if a minimum value of three front sensors is smaller than threshold, follow max
-    BUF_SIZE = 16
-    GAMMA = 0.97
+    SIDE_WEIGHT = 9
+    SENSITIVITY = 1     # steering sensitivity
+    THRESHOLD = 7       # if a minimum value of three front sensors is smaller than threshold, follow max
+    BUF_SIZE = 24
+    GAMMA = 0.95
     GOAL_DIST = 10      # if manhattan distance is smaller than goal dist, the truck moves forward
     PRINT_LOG = False
 
     channel = EngineConfigurationChannel()
     channel.set_configuration_parameters(width=1000, height=800, time_scale=SPEED)
-    env = UnityEnvironment(file_name=f'../Road{ROAD}/Prototype 1', side_channels=[channel])
+    env = UnityEnvironment(file_name=f'../Maps/Road{ROAD}/Prototype 1', side_channels=[channel])
     env.reset()
 
     behavior_name = list(env.behavior_specs)[0]  # List['My Behavior?team=0']
