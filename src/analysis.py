@@ -1,9 +1,11 @@
 import pandas as pd
+import os
 
 if __name__ == '__main__':
-    FILE = 'Road2_GoalDist5(20211029_22-52-42).txt'
-
-    df = pd.read_csv(f'../Logs/{FILE}').sort_values('frame', ascending=False)
+    log_path = '../Logs/'
+    files = os.listdir(log_path)
+    df = pd.concat([pd.read_csv(log_path + file) for file in files])
+    df = df.drop_duplicates().sort_values('frame', ascending=False)
     df_goal = df[df.goal == 1].sort_values('frame')
 
     print('All :', df.shape[0])
