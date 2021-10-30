@@ -2,8 +2,8 @@ import pandas as pd
 import os
 
 if __name__ == '__main__':
-    LOG_PATH = '../Logs/Road2'
-    
+    LOG_PATH = '../Logs/Road2/'
+
     files = os.listdir(LOG_PATH)
     df = pd.concat([pd.read_csv(LOG_PATH + file) for file in files])
     df = df.drop_duplicates().sort_values('frame', ascending=False)
