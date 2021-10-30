@@ -142,7 +142,7 @@ if __name__ == '__main__':
         comb_df.columns = RANGES.keys()
         comb_df.to_csv(f'../Combinations/Comb{now}.csv', index=False)
 
-    log_file = open(f'../Logs/Log_{log_file_name}.txt', 'w')
+    log_file = open(f'../Logs/Road{ROAD}/Log_{log_file_name}.txt', 'w')
     log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
 
     for sw, st, th, bf, gm in tqdm(combinations):
