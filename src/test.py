@@ -120,7 +120,7 @@ if __name__ == '__main__':
     LOAD_COMBINATIONS = True
 
     # COMBINATIONS_DIR is only useful if LOAD_COMBINATIONS is True
-    COMBINATIONS_DIR = '../Combinations/Comb_Road2_GoalDist10(20211030_14-43-10).csv'
+    COMBINATIONS_DIR = '../Combinations/Comb(20211030_14-43-10).csv'
     RANGES = {
         'side_weight': np.arange(2, 11),            # 9
         'sensitivity': np.arange(0.5, 3.1, 0.5),    # 6
@@ -129,7 +129,8 @@ if __name__ == '__main__':
         'gamma': np.arange(0.95, 0.99, 0.01)        # 4
     }
 
-    file_name = f'Road{ROAD}_GoalDist{GOAL_DIST}({datetime.now():%Y%m%d_%H-%M-%S})'
+    now = f'{datetime.now():%Y%m%d_%H-%M-%S}'
+    log_file_name = f'Road{ROAD}_GoalDist{GOAL_DIST}({now})'
 
     if LOAD_COMBINATIONS:
         combinations = pd.read_csv(COMBINATIONS_DIR).values
@@ -139,9 +140,9 @@ if __name__ == '__main__':
 
         comb_df = pd.DataFrame(combinations)
         comb_df.columns = RANGES.keys()
-        comb_df.to_csv(f'../Combinations/Comb_{file_name}.csv', index=False)
+        comb_df.to_csv(f'../Combinations/Comb{now}.csv', index=False)
 
-    log_file = open(f'../Logs/Log_{file_name}.txt', 'w')
+    log_file = open(f'../Logs/Log_{log_file_name}.txt', 'w')
     log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
 
     for sw, st, th, bf, gm in tqdm(combinations):
