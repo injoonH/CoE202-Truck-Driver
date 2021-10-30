@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.side_channel.engine_configuration_channel import EngineConfigurationChannel
 from datetime import datetime
@@ -113,15 +114,14 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
 
 
 if __name__ == '__main__':
-    road = 2
-    goal_dist = 5
-    speed = 16
+    ROAD = 2
+    GOAL_DIST = 10  # It should be greater than 5
+    SPEED = 16
+    LOAD_COMBINATIONS = True
 
-    log_path = f'../Logs/Road{road}_GoalDist{goal_dist}({datetime.now():%Y%m%d_%H-%M-%S}).txt'
-    log_file = open(log_path, 'w')
-    log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
-
-    ranges = {
+    # COMBINATIONS_DIR is only useful if LOAD_COMBINATIONS is True
+    COMBINATIONS_DIR = '../Combinations/Comb_Road2_GoalDist10(20211030_14-43-10).csv'
+    RANGES = {
         'side_weight': np.arange(2, 11),            # 9
         'sensitivity': np.arange(0.5, 3.1, 0.5),    # 6
         'threshold': np.arange(5, 8),               # 3
@@ -129,11 +129,23 @@ if __name__ == '__main__':
         'gamma': np.arange(0.95, 0.99, 0.01)        # 4
     }
 
-    combinations = np.meshgrid(*ranges.values())
-    combinations = np.array([el.flatten() for el in combinations]).T
+    file_name = f'Road{ROAD}_GoalDist{GOAL_DIST}({datetime.now():%Y%m%d_%H-%M-%S})'
+
+    if LOAD_COMBINATIONS:
+        combinations = pd.read_csv(COMBINATIONS_DIR).values
+    else:
+        combinations = np.meshgrid(*RANGES.values())
+        combinations = np.array([el.flatten() for el in combinations]).T
+
+        comb_df = pd.DataFrame(combinations)
+        comb_df.columns = RANGES.keys()
+        comb_df.to_csv(f'../Combinations/Comb_{file_name}.csv', index=False)
+
+    log_file = open(f'../Logs/Log_{file_name}.txt', 'w')
+    log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
 
     for sw, st, th, bf, gm in tqdm(combinations):
-        main(road, SPEED=speed, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
-             BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=goal_dist, LOG_FILE=log_file)
+        main(ROAD, SPEED=SPEED, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
+             BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=GOAL_DIST, LOG_FILE=log_file)
     
     log_file.close()
