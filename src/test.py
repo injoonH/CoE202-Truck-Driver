@@ -114,23 +114,22 @@ def main(ROAD, SPEED=8, MAX_FRAMES=10_000, FRONT_WEIGHT=1, SIDE_WEIGHT=8, SENSIT
 
 
 if __name__ == '__main__':
-    ROAD = 2
+    ROADS = (3,)
     GOAL_DIST = 10  # It should be greater than 5
-    SPEED = 16
+    SPEED = 100_000
     LOAD_COMBINATIONS = True
 
     # COMBINATIONS_DIR is only useful if LOAD_COMBINATIONS is True
-    COMBINATIONS_DIR = '../Combinations/Comb(20211030_14-43-10).csv'
+    COMBINATIONS_DIR = '../Goal_Road2.csv'
     RANGES = {
-        'side_weight': np.arange(2, 11),            # 9
+        'side_weight': np.arange(6, 11),            # 5
         'sensitivity': np.arange(0.5, 3.1, 0.5),    # 6
         'threshold': np.arange(5, 8),               # 3
         'bufsize': np.arange(8, 36, 4),             # 7
-        'gamma': np.arange(0.95, 0.99, 0.01)        # 4
+        'gamma': np.arange(0.95, 0.999, 0.01)       # 5
     }
 
     now = f'{datetime.now():%Y%m%d_%H-%M-%S}'
-    log_file_name = f'Road{ROAD}_GoalDist{GOAL_DIST}({now})'
 
     if LOAD_COMBINATIONS:
         combinations = pd.read_csv(COMBINATIONS_DIR).values
@@ -140,13 +139,15 @@ if __name__ == '__main__':
 
         comb_df = pd.DataFrame(combinations)
         comb_df.columns = RANGES.keys()
-        comb_df.to_csv(f'../Combinations/Comb{now}.csv', index=False)
-
-    log_file = open(f'../Logs/Road{ROAD}/Log_{log_file_name}.txt', 'w')
-    log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
-
-    for sw, st, th, bf, gm in tqdm(combinations):
-        main(ROAD, SPEED=SPEED, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
-             BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=GOAL_DIST, LOG_FILE=log_file)
+        comb_df.to_csv(f'../Combinations/Comb({now}).csv', index=False)
     
-    log_file.close()
+    for road in ROADS:
+        log_file_name = f'Road{road}_GoalDist{GOAL_DIST}({now})'
+        log_file = open(f'../Logs/Road{road}/{log_file_name}.txt', 'w')
+        log_file.write('frame,side weight,sensitivity,threshold,buf size,gamma,goal\n')
+
+        for sw, st, th, bf, gm in tqdm(combinations):
+            main(road, SPEED=SPEED, SIDE_WEIGHT=sw, SENSITIVITY=st, THRESHOLD=th,
+                BUF_SIZE=int(bf), GAMMA=gm, GOAL_DIST=GOAL_DIST, LOG_FILE=log_file)
+        
+        log_file.close()

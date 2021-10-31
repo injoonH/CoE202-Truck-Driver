@@ -60,11 +60,13 @@ def main():
     FRAMES = 2000
     ROAD = 1
     FRONT_WEIGHT = 1
+
     SIDE_WEIGHT = 9
-    SENSITIVITY = 1     # steering sensitivity
-    THRESHOLD = 7       # if a minimum value of three front sensors is smaller than threshold, follow max
-    BUF_SIZE = 24
-    GAMMA = 0.95
+    SENSITIVITY = 1
+    THRESHOLD = 7
+    BUF_SIZE = 20
+    GAMMA = 0.98
+
     GOAL_DIST = 10      # if manhattan distance is smaller than goal dist, the truck moves forward
     PRINT_LOG = False
 
