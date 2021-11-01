@@ -28,7 +28,7 @@ def get_action(memory_buffer, front_weight, side_weight, sensitivity, gamma, thr
 
 
 def main():
-    ROAD_DIR = '../Maps/Road1/Prototype 1'
+    ROAD_DIR = './Road1/Prototype 1'
 
     SPEED = 8
     FRAMES = 1_000_000_000
