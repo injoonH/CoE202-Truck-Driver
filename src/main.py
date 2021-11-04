@@ -61,11 +61,11 @@ def main():
     ROAD = 1
     FRONT_WEIGHT = 1
 
-    SIDE_WEIGHT = 9
-    SENSITIVITY = 1
-    THRESHOLD = 7
-    BUF_SIZE = 20
-    GAMMA = 0.98
+    SIDE_WEIGHT = 7
+    SENSITIVITY = 2.5
+    THRESHOLD = 6
+    BUF_SIZE = 16
+    GAMMA = 0.95
 
     GOAL_DIST = 10      # if manhattan distance is smaller than goal dist, the truck moves forward
     PRINT_LOG = False
